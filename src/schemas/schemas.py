@@ -12,7 +12,6 @@ class User(BaseModel):
 
 class Product(BaseModel):
     id: Optional[str] = None
-    user:User
     name: str
     details: str
     price: float
