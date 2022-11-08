@@ -32,4 +32,12 @@ class OrderRepository:
             self.__db.delete(db_order)
             self.__db.commit()
             return True
-        return False                                
+        return False
+
+    def update(self, order_id, order:schemas.Order) ->models.Order:
+        db_order:models.Order = self.__db.query(models.Order).get(order_id)
+        db_order.quantity = order.quantity
+        db_order.delivery = order.delivery
+        db_order.address = order.address
+        db_order.observations = order.observations
+        return db_order                                    
