@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends
 from src.schemas.schemas import Product
+from src.schemas.schemas import User
 from src.infra.sqlalchemy.repositories.product import ProductRepository
 from src.infra.sqlalchemy.repositories.user import UserRepository
 from sqlalchemy.orm import Session
@@ -34,3 +35,20 @@ def delete_product(product_id:int, db:Session = Depends(get_db)):
 def users_list(db:Session=Depends(get_db)):
     users = UserRepository(db).users_list()
     return users
+
+@app.post("/users")
+def create_user(user: User, db:Session= Depends(get_db)):
+    created_user = UserRepository(db).create(user)
+    return created_user
+
+@app.get("/users/{user_id}")
+def get_user(user_id:int, db:Session= Depends(get_db)):
+    user = UserRepository(db).get_user(user_id)
+    return user
+
+@app.delete("/users/{user_id}")
+def delete_user(user_id:int, db:Session= Depends(get_db)):
+    deleted_user= UserRepository(db).remove(user_id)
+    if deleted_user:
+        return {"msg": "User deleted"}
+    return {"msg":"You don't have users with this id"}    
