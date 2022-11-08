@@ -19,12 +19,17 @@ class ProductRepository:
         return db_product                
 
     def product_list(self) ->List[models.Product]:
-        products = self.__db.query(models.Product).all()
-        return products
+        db_products = self.__db.query(models.Product).all()
+        return db_products
 
-    def get_product(self, product_id):
-        product = self.__db.query(models.Product).filter(product_id).one()
-        return product
+    def get_product(self, product_id) ->models.Product:
+        db_product = self.__db.query(models.Product).get(product_id)
+        return db_product
 
-    def remove(self):
-        pass    
+    def remove(self,product_id) ->bool:
+        db_product = self.__db.query(models.Product).get(product_id)
+        if db_product:
+            self.__db.delete(db_product)
+            self.__db.commit()
+            return True
+        return False    

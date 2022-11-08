@@ -12,3 +12,21 @@ class Product(Base):
     avaiable= Column(Boolean)
 
 
+class User(Base):
+    
+    __tablename__ = "user"
+
+    id= Column(Integer, primary_key= True, index= True)
+    name= Column(String)
+    phone= Column(String)
+
+
+class Order(Base):
+
+    __tablename__ = "order"
+
+    id= Column(Integer, primary_key= True, index=True)
+    quantity= Column(Integer)
+    delivery= Column(Boolean)
+    address= Column(String)
+    observations= Column(String) 
