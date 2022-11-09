@@ -1,5 +1,3 @@
-
-
 from fastapi import Depends, FastAPI, Response, status
 from sqlalchemy.orm import Session
 
@@ -56,20 +54,20 @@ async def delete_product(
 
 
 @app.get("/users")
-def users_list(db: Session = Depends(get_db)):
+async def users_list(db: Session = Depends(get_db)):
     users = UserRepository(db).users_list()
     return users
 
 
 @app.post("/users")
-def create_user(user: User, response: Response, db: Session = Depends(get_db)):
+async def create_user(user: User, response: Response, db: Session = Depends(get_db)):
     created_user = UserRepository(db).create(user)
     response.status_code = status.HTTP_201_CREATED
     return created_user
 
 
 @app.get("/users/{user_id}")
-def get_user(user_id: int, response: Response, db: Session = Depends(get_db)):
+async def get_user(user_id: int, response: Response, db: Session = Depends(get_db)):
     user = UserRepository(db).get_user(user_id)
     if not user:
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -77,7 +75,7 @@ def get_user(user_id: int, response: Response, db: Session = Depends(get_db)):
 
 
 @app.delete("/users/{user_id}")
-def delete_user(
+async def delete_user(
     user_id: int, response: Response, db: Session = Depends(get_db)
 ):
     user = UserRepository(db).get_user(user_id)
