@@ -1,5 +1,7 @@
-from pydantic import BaseModel
 from typing import Optional
+
+from pydantic import BaseModel
+
 
 class User(BaseModel):
     id: Optional[str] = None
@@ -8,7 +10,6 @@ class User(BaseModel):
 
     class config:
         orm_mode = True
-
 
 
 class Product(BaseModel):
@@ -21,13 +22,13 @@ class Product(BaseModel):
     class config:
         orm_mode = True
 
+
 class Order(BaseModel):
     id: Optional[str] = None
     quantity: int
     delivery: bool = True
     address: str
-    observations: Optional[str]= "No observations"
+    observations: Optional[str] = "No observations"
 
     class config:
         orm_mode = True
-
