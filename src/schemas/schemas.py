@@ -8,8 +8,17 @@ class User(BaseModel):
     name: str
     phone: str
 
-    class config:
+    class Config:
         orm_mode = True
+
+
+class UserOut(BaseModel):
+    id: Optional[str] = None
+    name: str
+
+
+    class Config:
+        orm_mode= True
 
 
 class Product(BaseModel):
@@ -19,8 +28,17 @@ class Product(BaseModel):
     price: float
     avaiable: bool = False
 
-    class config:
+    class Config:
         orm_mode = True
+
+
+class ProductOut(BaseModel):
+    id: Optional[str] = None
+    name: str
+    price: float
+
+    class Config:
+        orm_mode = True       
 
 
 class Order(BaseModel):
@@ -30,5 +48,14 @@ class Order(BaseModel):
     address: str
     observations: Optional[str] = "No observations"
 
-    class config:
+    class Config:
+        orm_mode = True
+
+
+class OrderOut(BaseModel):
+    id: Optional[str] = None
+    quantity: int
+    address: str
+
+    class Config:
         orm_mode = True
