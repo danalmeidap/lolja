@@ -21,9 +21,8 @@ async def products_list(response: Response, db: Session = Depends(get_db)):
 async def create_product(
     product: Product, response: Response, db: Session = Depends(get_db)
 ):
-    created_product = ProductRepository(db).create(product)
     response.status_code = status.HTTP_201_CREATED
-    return created_product
+    return ProductRepository(db).create(product)
 
 
 @app.get("/products/{product_id}", status_code= status.HTTP_200_OK, response_model=ProductOut)
@@ -60,9 +59,8 @@ async def users_list(db: Session = Depends(get_db)):
 
 @app.post("/users", status_code=status.HTTP_201_CREATED, response_model=UserOut)
 async def create_user(user: User, response: Response, db: Session = Depends(get_db)):
-    created_user = UserRepository(db).create(user)
     response.status_code = status.HTTP_201_CREATED
-    return created_user
+    return UserRepository(db).create(user)
 
 
 @app.get("/users/{user_id}", status_code=status.HTTP_200_OK, response_model=UserOut)
@@ -99,9 +97,8 @@ async def orders_list(db: Session = Depends(get_db)):
 async def create_order(
     order: Order, response: Response, db: Session = Depends(get_db)
 ):
-    created_order = OrderRepository(db).create(order)
-    response.status_code = status.HTTP_201_CREATED
-    return created_order
+    response.status_code= status.HTTP_201_CREATED 
+    return OrderRepository(db).create(order)
 
 
 @app.get("/orders/{order_id}", status_code= status.HTTP_200_OK, response_model= OrderOut)
