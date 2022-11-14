@@ -9,7 +9,7 @@ from src.infra.sqlalchemy.repositories.user import UserRepository
 from src.schemas.schemas import Order, Product, User, ProductOut, UserOut, OrderOut
 
 app = FastAPI()
-create_db()
+#create_db()
 
 
 @app.get("/products", status_code= status.HTTP_200_OK, response_model=List[ProductOut])
@@ -63,12 +63,20 @@ async def create_user(user: User, response: Response, db: Session = Depends(get_
     return UserRepository(db).create(user)
 
 
-@app.get("/users/{user_id}", status_code=status.HTTP_200_OK, response_model=UserOut)
+@app.get("/users/{user_id}", status_code= status.HTTP_200_OK, response_model=UserOut)
 async def get_user(user_id: int, response: Response, db: Session = Depends(get_db)):
     user = UserRepository(db).get_user(user_id)
     if not user:
         response.status_code = status.HTTP_404_NOT_FOUND
     return user if user else response
+
+
+@app.get("/user/{user_phone}", status_code= status.HTTP_200_OK, response_model= UserOut)
+async def get_user_by_phone(user_phone:str, response:Response, db: Session= Depends(get_db)):
+    user= UserRepository(db).get_by_phone(user_phone)
+    if not user:
+        response.status_code= status.HTTP_404_NOT_FOUND
+    return user if user else response        
 
 
 @app.delete("/users/{user_id}", status_code= status.HTTP_200_OK)

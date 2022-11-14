@@ -15,6 +15,8 @@ class ProductRepository:
             details=product.details,
             price=product.price,
             avaiable=product.avaiable,
+            user_id= product.user_id
+
         )
         self.__db.add(db_product)
         self.__db.commit()

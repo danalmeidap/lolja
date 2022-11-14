@@ -10,7 +10,7 @@ class UserRepository:
         self.__db = db
 
     def create(self, user: schemas.User) -> models.User:
-        db_user = models.User(name=user.name, phone=user.phone)
+        db_user = models.User(name=user.name, phonee=user.phonee, password= user.password)
         self.__db.add(db_user)
         self.__db.commit()
         self.__db.refresh(db_user)
