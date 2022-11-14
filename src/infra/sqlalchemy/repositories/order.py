@@ -15,6 +15,8 @@ class OrderRepository:
             delivery=order.delivery,
             address=order.address,
             observations=order.observations,
+            user_id= order.user_id,
+            product_id= order.product_id       
         )
         self.__db.add(db_order)
         self.__db.commit()
@@ -43,4 +45,6 @@ class OrderRepository:
         db_order.delivery = order.delivery
         db_order.address = order.address
         db_order.observations = order.observations
+        db_order.user_id= order.user_id
+        db_order.product_id= order.product_id
         return db_order
