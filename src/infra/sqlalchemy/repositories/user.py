@@ -1,4 +1,5 @@
 from typing import List
+from sqlalchemy import select
 
 from sqlalchemy.orm import Session
 from src.infra.sqlalchemy.models import models
@@ -31,3 +32,7 @@ class UserRepository:
             self.__db.commit()
             return True
         return False
+
+    def get_user_by_phone(self, user_phone):
+        query= select(models.User).where(models.User.phonee == user_phone)
+        return self.__db.execute(query).scalars().first()    
