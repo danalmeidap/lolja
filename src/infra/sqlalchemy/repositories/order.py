@@ -1,5 +1,6 @@
 from typing import List
 
+from sqlalchemy import update
 from sqlalchemy.orm import Session
 from src.infra.sqlalchemy.models import models
 from src.schemas import schemas
@@ -15,8 +16,8 @@ class OrderRepository:
             delivery=order.delivery,
             address=order.address,
             observations=order.observations,
-            user_id= order.user_id,
-            product_id= order.product_id       
+            user_id=order.user_id,
+            product_id=order.product_id,
         )
         self.__db.add(db_order)
         self.__db.commit()
@@ -40,11 +41,17 @@ class OrderRepository:
         return False
 
     def update(self, order_id, order: schemas.Order) -> models.Order:
-        db_order: models.Order = self.__db.query(models.Order).get(order_id)
-        db_order.quantity = order.quantity
-        db_order.delivery = order.delivery
-        db_order.address = order.address
-        db_order.observations = order.observations
-        db_order.user_id= order.user_id
-        db_order.product_id= order.product_id
-        return db_order
+        update_stmt = (
+            update(models.Order)
+            .where(models.Order.id == order_id)
+            .values(
+                quantity=order.quantity,
+                delivery=order.delivery,
+                address=order.address,
+                observations=order.observations,
+                user_id=order.user_id,
+                product_id=order.product_id,
+            )
+        )
+        self.__db.execute(update_stmt)
+        self.__db.commit()

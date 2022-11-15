@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -8,7 +8,6 @@ class User(BaseModel):
     name: str
     phonee: str
     password: str
-    
 
     class Config:
         orm_mode = True
@@ -18,10 +17,10 @@ class UserOut(BaseModel):
     id: Optional[int] = None
     name: str
     phonee: str
-    
-    
+
     class Config:
-        orm_mode= True
+        orm_mode = True
+
 
 class Product(BaseModel):
     id: Optional[int] = None
@@ -29,7 +28,7 @@ class Product(BaseModel):
     details: str
     price: float
     avaiable: bool = False
-    user_id:Optional[int]
+    user_id: Optional[int]
     user: Optional[UserOut]
 
     class Config:
@@ -41,7 +40,6 @@ class ProductOut(BaseModel):
     name: str
     price: float
 
-
     class Config:
         orm_mode = True
 
@@ -52,9 +50,8 @@ class Order(BaseModel):
     delivery: bool = True
     address: str
     observations: Optional[str] = "No observations"
-    user_id:Optional[int]
-    product_id:Optional[int]
-    
+    user_id: Optional[int]
+    product_id: Optional[int]
 
     class Config:
         orm_mode = True
@@ -65,8 +62,7 @@ class OrderOut(BaseModel):
     quantity: int
     address: str
     user: Optional[UserOut]
-    product:Optional[ProductOut]
+    product: Optional[ProductOut]
 
-    
     class Config:
         orm_mode = True

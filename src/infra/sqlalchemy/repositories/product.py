@@ -1,9 +1,9 @@
 from typing import List
 
+from sqlalchemy import update
 from sqlalchemy.orm import Session
 from src.infra.sqlalchemy.models import models
 from src.schemas import schemas
-from sqlalchemy import update
 
 
 class ProductRepository:
@@ -16,8 +16,7 @@ class ProductRepository:
             details=product.details,
             price=product.price,
             avaiable=product.avaiable,
-            user_id= product.user_id
-
+            user_id=product.user_id,
         )
         self.__db.add(db_product)
         self.__db.commit()
@@ -32,14 +31,20 @@ class ProductRepository:
         db_product = self.__db.query(models.Product).get(product_id)
         return db_product
 
-    def update(self, product_id, product:schemas.Product):
-        update_stmt= update(models.Product).where(models.Product.id == product_id).values(            name=product.name,
-            details=product.details,
-            price=product.price,
-            avaiable=product.avaiable,
-            user_id= product.user_id)
+    def update(self, product_id, product: schemas.Product):
+        update_stmt = (
+            update(models.Product)
+            .where(models.Product.id == product_id)
+            .values(
+                name=product.name,
+                details=product.details,
+                price=product.price,
+                avaiable=product.avaiable,
+                user_id=product.user_id,
+            )
+        )
         self.__db.execute(update_stmt)
-        self.__db.commit()     
+        self.__db.commit()
 
     def remove(self, product_id) -> bool:
         db_product = self.__db.query(models.Product).get(product_id)

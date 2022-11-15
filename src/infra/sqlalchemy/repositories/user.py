@@ -1,6 +1,6 @@
 from typing import List
-from sqlalchemy import select, update
 
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 from src.infra.sqlalchemy.models import models
 from src.schemas import schemas
@@ -11,7 +11,9 @@ class UserRepository:
         self.__db = db
 
     def create(self, user: schemas.User) -> models.User:
-        db_user = models.User(name=user.name, phonee=user.phonee, password= user.password)
+        db_user = models.User(
+            name=user.name, phonee=user.phonee, password=user.password
+        )
         self.__db.add(db_user)
         self.__db.commit()
         self.__db.refresh(db_user)
@@ -33,16 +35,15 @@ class UserRepository:
             return True
         return False
 
-    def get_by_phone(self, user_phone) ->models.User:
-        query= select(models.User).where(models.User.phonee == user_phone)
-        return self.__db.execute(query).scalars().first()    
+    def get_by_phone(self, user_phone) -> models.User:
+        query = select(models.User).where(models.User.phonee == user_phone)
+        return self.__db.execute(query).scalars().first()
 
-
-    def update(self, user_id:int, user: schemas.User) -> models.User:
-        update_stmt= update(models.User).where(models.User.id == user_id).values(
-            name= user.name,
-            phonee= user.phonee,
-            password= user.password
+    def update(self, user_id: int, user: schemas.User) -> models.User:
+        update_stmt = (
+            update(models.User)
+            .where(models.User.id == user_id)
+            .values(name=user.name, phonee=user.phonee, password=user.password)
         )
         self.__db.execute(update_stmt)
         self.__db.commit()
