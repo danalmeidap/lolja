@@ -1,16 +1,6 @@
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel
-
-
-class User(BaseModel):
-    id: Optional[int] = None
-    name: str
-    phonee: str
-    password: str
-
-    class Config:
-        orm_mode = True
 
 
 class UserOut(BaseModel):
@@ -39,6 +29,17 @@ class ProductOut(BaseModel):
     id: Optional[str] = None
     name: str
     price: float
+
+    class Config:
+        orm_mode = True
+
+
+class User(BaseModel):
+    id: Optional[int] = None
+    name: str
+    phonee: str
+    password: str
+    products: List[ProductOut] = []
 
     class Config:
         orm_mode = True
