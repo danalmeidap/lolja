@@ -1,5 +1,5 @@
 from typing import List
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from sqlalchemy.orm import Session
 from src.infra.sqlalchemy.models import models
@@ -33,6 +33,16 @@ class UserRepository:
             return True
         return False
 
-    def get_user_by_phone(self, user_phone):
+    def get_by_phone(self, user_phone) ->models.User:
         query= select(models.User).where(models.User.phonee == user_phone)
         return self.__db.execute(query).scalars().first()    
+
+
+    def update(self, user_id:int, user: schemas.User) -> models.User:
+        update_stmt= update(models.User).where(models.User.id == user_id).values(
+            name= user.name,
+            phonee= user.phonee,
+            password= user.password
+        )
+        self.__db.execute(update_stmt)
+        self.__db.commit()

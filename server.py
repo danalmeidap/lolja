@@ -23,7 +23,7 @@ async def products_list(response: Response, db: Session = Depends(get_db)):
     return ProductRepository(db).product_list()
 
 
-@app.post("/products", status_code=status.HTTP_201_CREATED, tags=[Tags.products], response_model=ProductOut)
+@app.post("/products", status_code=status.HTTP_201_CREATED, tags=[Tags.products], response_model= ProductOut)
 async def create_product(
     product: Product, response: Response, db: Session = Depends(get_db)
 ):
@@ -31,13 +31,24 @@ async def create_product(
     return ProductRepository(db).create(product)
 
 
-@app.get("/products/{product_id}", status_code= status.HTTP_200_OK, tags=[Tags.products], response_model=ProductOut)
+@app.get("/products/{product_id}", status_code= status.HTTP_200_OK, tags=[Tags.products], response_model= ProductOut)
 async def get_product(
     product_id: int, response: Response, db: Session = Depends(get_db)
 ):
     product = ProductRepository(db).get_product(product_id)
     if not product:
         response.status_code = status.HTTP_404_NOT_FOUND
+    return product if product else response
+
+
+@app.put('/products/{product_id}', status_code= status.HTTP_200_OK, tags= [Tags.products], response_model= ProductOut)
+async def update_product(product_id:int, response:Response, product:Product, db:Session= Depends(get_db)):
+    if not ProductRepository(db).get_product(product_id):
+        response.status_code= status.HTTP_404_NOT_FOUND
+    else:
+        ProductRepository(db).update(product_id, product)
+        response.status_code= status.HTTP_200_OK
+    product= ProductRepository(db).get_product(product_id)
     return product if product else response
 
 
@@ -83,6 +94,17 @@ async def get_user_by_phone(user_phone:str, response:Response, db: Session= Depe
     if not user:
         response.status_code= status.HTTP_404_NOT_FOUND
     return user if user else response        
+
+
+@app.put("/user/{user_id}",status_code= status.HTTP_200_OK, tags= [Tags.users], response_model=UserOut)
+async def update_user(user_id:int, response:Response, user:User, db:Session= Depends(get_db)):   
+    if not UserRepository(db).get_user(user_id):
+        response.status_code= status.HTTP_404_NOT_FOUND      
+    else:
+        UserRepository(db).update(user_id, user)
+        response.status_code= status.HTTP_200_OK
+    user= UserRepository(db).get_user(user_id)    
+    return user if user else response      
 
 
 @app.delete("/users/{user_id}", status_code= status.HTTP_200_OK, tags= [Tags.users])

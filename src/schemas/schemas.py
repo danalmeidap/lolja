@@ -35,6 +35,7 @@ class Product(BaseModel):
     class Config:
         orm_mode = True
 
+
 class ProductOut(BaseModel):
     id: Optional[str] = None
     name: str
@@ -57,6 +58,8 @@ class Order(BaseModel):
 
     class Config:
         orm_mode = True
+
+
 class OrderOut(BaseModel):
     id: Optional[str] = None
     quantity: int
