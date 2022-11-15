@@ -60,7 +60,7 @@ class Order(BaseModel):
 
 
 class OrderOut(BaseModel):
-    id: Optional[str] = None
+    id: Optional[int] = None
     quantity: int
     address: str
     user: Optional[UserOut]
