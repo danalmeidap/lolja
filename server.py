@@ -1,6 +1,7 @@
 from fastapi import Depends, FastAPI, Response, status
 from sqlalchemy.orm import Session
 from typing import List
+from enum import Enum
 
 from src.infra.sqlalchemy.config.database import create_db, get_db
 from src.infra.sqlalchemy.repositories.order import OrderRepository
@@ -9,15 +10,20 @@ from src.infra.sqlalchemy.repositories.user import UserRepository
 from src.schemas.schemas import Order, Product, User, ProductOut, UserOut, OrderOut
 
 app = FastAPI()
-#create_db()
+create_db()
+
+class Tags(Enum):
+    products= 'products'
+    users= 'users'
+    orders= 'orders'
 
 
-@app.get("/products", status_code= status.HTTP_200_OK, response_model=List[ProductOut])
+@app.get("/products", status_code= status.HTTP_200_OK, tags=[Tags.products], response_model=List[ProductOut])
 async def products_list(response: Response, db: Session = Depends(get_db)):
     return ProductRepository(db).product_list()
 
 
-@app.post("/products", status_code=status.HTTP_201_CREATED, response_model=ProductOut)
+@app.post("/products", status_code=status.HTTP_201_CREATED, tags=[Tags.products], response_model=ProductOut)
 async def create_product(
     product: Product, response: Response, db: Session = Depends(get_db)
 ):
@@ -25,7 +31,7 @@ async def create_product(
     return ProductRepository(db).create(product)
 
 
-@app.get("/products/{product_id}", status_code= status.HTTP_200_OK, response_model=ProductOut)
+@app.get("/products/{product_id}", status_code= status.HTTP_200_OK, tags=[Tags.products], response_model=ProductOut)
 async def get_product(
     product_id: int, response: Response, db: Session = Depends(get_db)
 ):
@@ -35,7 +41,7 @@ async def get_product(
     return product if product else response
 
 
-@app.delete("/products/{product_id}", status_code= status.HTTP_200_OK)
+@app.delete("/products/{product_id}", status_code= status.HTTP_200_OK, tags=[Tags.products])
 async def delete_product(
     product_id: int, response: Response, db: Session = Depends(get_db)
 ):
@@ -52,18 +58,18 @@ async def delete_product(
         )
 
 
-@app.get("/users", status_code= status.HTTP_200_OK, response_model= List[UserOut])
+@app.get("/users", status_code= status.HTTP_200_OK, tags=[Tags.users], response_model= List[UserOut])
 async def users_list(db: Session = Depends(get_db)):
     return UserRepository(db).users_list()
 
 
-@app.post("/users", status_code=status.HTTP_201_CREATED, response_model=UserOut)
+@app.post("/users", status_code=status.HTTP_201_CREATED, tags= [Tags.users], response_model=UserOut)
 async def create_user(user: User, response: Response, db: Session = Depends(get_db)):
     response.status_code = status.HTTP_201_CREATED
     return UserRepository(db).create(user)
 
 
-@app.get("/users/{user_id}", status_code= status.HTTP_200_OK, response_model=UserOut)
+@app.get("/users/{user_id}", status_code= status.HTTP_200_OK, tags= [Tags.users], response_model=UserOut)
 async def get_user(user_id: int, response: Response, db: Session = Depends(get_db)):
     user = UserRepository(db).get_user(user_id)
     if not user:
@@ -71,7 +77,7 @@ async def get_user(user_id: int, response: Response, db: Session = Depends(get_d
     return user if user else response
 
 
-@app.get("/user/{user_phone}", status_code= status.HTTP_200_OK, response_model= UserOut)
+@app.get("/user/{user_phone}", status_code= status.HTTP_200_OK, tags= [Tags.users], response_model= UserOut)
 async def get_user_by_phone(user_phone:str, response:Response, db: Session= Depends(get_db)):
     user= UserRepository(db).get_by_phone(user_phone)
     if not user:
@@ -79,7 +85,7 @@ async def get_user_by_phone(user_phone:str, response:Response, db: Session= Depe
     return user if user else response        
 
 
-@app.delete("/users/{user_id}", status_code= status.HTTP_200_OK)
+@app.delete("/users/{user_id}", status_code= status.HTTP_200_OK, tags= [Tags.users])
 async def delete_user(
     user_id: int, response: Response, db: Session = Depends(get_db)
 ):
@@ -96,12 +102,12 @@ async def delete_user(
         )
 
 
-@app.get("/orders", status_code= status.HTTP_200_OK, response_model= List[OrderOut])
+@app.get("/orders", status_code= status.HTTP_200_OK, tags= [Tags.orders], response_model= List[OrderOut])
 async def orders_list(db: Session = Depends(get_db)):
     return OrderRepository(db).orders_list()
 
 
-@app.post("/orders", status_code= status.HTTP_201_CREATED, response_model= OrderOut)
+@app.post("/orders", status_code= status.HTTP_201_CREATED, tags= [Tags.orders], response_model= OrderOut)
 async def create_order(
     order: Order, response: Response, db: Session = Depends(get_db)
 ):
@@ -109,7 +115,7 @@ async def create_order(
     return OrderRepository(db).create(order)
 
 
-@app.get("/orders/{order_id}", status_code= status.HTTP_200_OK, response_model= OrderOut)
+@app.get("/orders/{order_id}", status_code= status.HTTP_200_OK, tags= [Tags.orders], response_model= OrderOut)
 async def get_order(
     order_id: int, response: Response, db: Session = Depends(get_db)
 ):
@@ -119,7 +125,7 @@ async def get_order(
     return order if order else response
 
 
-@app.delete("/orders/{order_id}", status_code= status.HTTP_200_OK)
+@app.delete("/orders/{order_id}", status_code= status.HTTP_200_OK, tags= [Tags.orders])
 async def delete_order(
     order_id: int, response: Response, db: Session = Depends(get_db)
 ):
