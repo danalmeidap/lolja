@@ -4,9 +4,10 @@ from pydantic import BaseModel
 
 
 class ProductOut(BaseModel):
-    id: Optional[str] = None
+    id: Optional[int] = None
     name: str
     price: float
+    avaiable: bool
 
     class Config:
         orm_mode = True
@@ -20,6 +21,16 @@ class User(BaseModel):
     products: List[ProductOut] = []
    
 
+    class Config:
+        orm_mode = True
+
+
+class UserForList(BaseModel):
+    id: Optional[int] = None
+    name: str
+    phonee: str
+    products: List[ProductOut] = []
+   
     class Config:
         orm_mode = True
 

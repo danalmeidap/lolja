@@ -7,10 +7,28 @@ from src.infra.sqlalchemy.config.database import create_db, get_db
 from src.infra.sqlalchemy.repositories.order import OrderRepository
 from src.infra.sqlalchemy.repositories.product import ProductRepository
 from src.infra.sqlalchemy.repositories.user import UserRepository
-from src.schemas.schemas import Order, Product, User, ProductOut, UserOut, OrderOut
+from src.schemas.schemas import Order, Product, User, ProductOut, UserOut, OrderOut, UserForList
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
 create_db()
+
+
+origins = [
+     "http://localhost:5500",
+     "http://localhost:8080",
+]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 class Tags(Enum):
     products= 'products'
@@ -18,7 +36,7 @@ class Tags(Enum):
     orders= 'orders'
 
 
-@app.get("/products", status_code= status.HTTP_200_OK, tags=[Tags.products], response_model=List[ProductOut])
+@app.get("/products", status_code= status.HTTP_200_OK, tags=[Tags.products], response_model=List[Product])
 async def products_list(response: Response, db: Session = Depends(get_db)):
     return ProductRepository(db).product_list()
 
@@ -69,7 +87,7 @@ async def delete_product(
         )
 
 
-@app.get("/users", status_code= status.HTTP_200_OK, tags=[Tags.users], response_model= List[User])
+@app.get("/users", status_code= status.HTTP_200_OK, tags=[Tags.users], response_model= List[UserForList])
 async def users_list(db: Session = Depends(get_db)):
     return UserRepository(db).users_list()
 

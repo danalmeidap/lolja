@@ -40,7 +40,6 @@ class ProductRepository:
                 details=product.details,
                 price=product.price,
                 avaiable=product.avaiable,
-                user_id=product.user_id,
             )
         )
         self.__db.execute(update_stmt)

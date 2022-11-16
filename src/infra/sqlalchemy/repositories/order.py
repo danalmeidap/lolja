@@ -49,8 +49,6 @@ class OrderRepository:
                 delivery=order.delivery,
                 address=order.address,
                 observations=order.observations,
-                user_id=order.user_id,
-                product_id=order.product_id,
             )
         )
         self.__db.execute(update_stmt)
