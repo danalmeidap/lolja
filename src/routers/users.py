@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 
 from src.infra.sqlalchemy.config.database import get_db
@@ -27,9 +27,8 @@ async def users_list(db: Session = Depends(get_db)):
     response_model=UserOut,
 )
 async def create_user(
-    user: User, response: Response, db: Session = Depends(get_db)
+    user: User, db: Session = Depends(get_db)
 ):
-    response.status_code = status.HTTP_201_CREATED
     return UserRepository(db).create(user)
 
 
@@ -40,12 +39,12 @@ async def create_user(
     response_model=UserOut,
 )
 async def get_user(
-    user_id: int, response: Response, db: Session = Depends(get_db)
+    user_id: int, db: Session = Depends(get_db)
 ):
     user = UserRepository(db).get_user(user_id)
     if not user:
-        response.status_code = status.HTTP_404_NOT_FOUND
-    return user if user else response
+        HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="User not found")
+    return user
 
 
 @router.get(
@@ -55,12 +54,12 @@ async def get_user(
     response_model=UserOut,
 )
 async def get_user_by_phone(
-    user_phone: str, response: Response, db: Session = Depends(get_db)
+    user_phone: str, db: Session = Depends(get_db)
 ):
     user = UserRepository(db).get_by_phone(user_phone)
     if not user:
-        response.status_code = status.HTTP_404_NOT_FOUND
-    return user if user else response
+        HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="User not found")
+    return user 
 
 
 @router.put(
@@ -70,31 +69,25 @@ async def get_user_by_phone(
     response_model=UserOut,
 )
 async def update_user(
-    user_id: int, response: Response, user: User, db: Session = Depends(get_db)
+    user_id: int, user: User, db: Session = Depends(get_db)
 ):
     if not UserRepository(db).get_user(user_id):
-        response.status_code = status.HTTP_404_NOT_FOUND
-    else:
-        UserRepository(db).update(user_id, user)
-        response.status_code = status.HTTP_200_OK
+        HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="User not found")
+    UserRepository(db).update(user_id, user)  
     user = UserRepository(db).get_user(user_id)
-    return user if user else response
+    return user
 
 
 @router.delete(
     "/users/{user_id}", status_code=status.HTTP_200_OK, tags=["users"]
 )
 async def delete_user(
-    user_id: int, response: Response, db: Session = Depends(get_db)
+    user_id: int, db: Session = Depends(get_db)
 ):
     user = UserRepository(db).get_user(user_id)
     if not user:
-        response.status_code = status.HTTP_404_NOT_FOUND
-    else:
-        if UserRepository(db).remove(user_id):
-            response.status_code = status.HTTP_200_OK
-        return (
-            f"User id {user_id} deleted"
-            if response.status_code == status.HTTP_200_OK
-            else response
-        )
+        HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="User not found")
+    UserRepository(db).remove(user_id)
+    return f"User id {user_id} deleted" 
+            
+

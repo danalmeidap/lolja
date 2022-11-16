@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 from sqlalchemy.orm import Session
 from src.infra.sqlalchemy.models import models
 from src.schemas import schemas
@@ -27,15 +27,12 @@ class UserRepository:
         db_user = self.__db.query(models.User).get(user_id)
         return db_user
 
-    def remove(self, user_id) -> bool:
-        db_user = self.__db.query(models.User).get(user_id)
-        if db_user:
-            self.__db.delete(db_user)
-            self.__db.commit()
-            return True
-        return False
+    def remove(self, user_id:int) -> None:
+        delete_stmt= delete(models.User).where(models.User.id == user_id)
+        self.__db.execute(delete_stmt)
+        self.__db.commit()
 
-    def get_by_phone(self, user_phone) -> models.User:
+    def get_by_phone(self, user_phone: str) -> models.User:
         query = select(models.User).where(models.User.phonee == user_phone)
         return self.__db.execute(query).scalars().first()
 

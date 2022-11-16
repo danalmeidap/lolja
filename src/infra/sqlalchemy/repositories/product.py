@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import update
+from sqlalchemy import update, delete
 from sqlalchemy.orm import Session
 from src.infra.sqlalchemy.models import models
 from src.schemas import schemas
@@ -45,10 +45,7 @@ class ProductRepository:
         self.__db.execute(update_stmt)
         self.__db.commit()
 
-    def remove(self, product_id) -> bool:
-        db_product = self.__db.query(models.Product).get(product_id)
-        if db_product:
-            self.__db.delete(db_product)
-            self.__db.commit()
-            return True
-        return False
+    def remove(self, product_id) -> None:
+        delete_stmt= delete(models.Product).where(models.Product == product_id)
+        self.__db.execute(delete_stmt)
+        self.__db.commit()

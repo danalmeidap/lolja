@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import update
+from sqlalchemy import update, delete
 from sqlalchemy.orm import Session
 from src.infra.sqlalchemy.models import models
 from src.schemas import schemas
@@ -32,14 +32,11 @@ class OrderRepository:
         db_order = self.__db.query(models.Order).get(order_id)
         return db_order
 
-    def remove(self, order_id: int) -> bool:
-        db_order = self.__db.query(models.Order).get(order_id)
-        if db_order:
-            self.__db.delete(db_order)
-            self.__db.commit()
-            return True
-        return False
-
+    def remove(self, order_id: int) -> None:
+        delete_stmt = delete(models.Order).where(models.Order.id==order_id)
+        self.__db.execute(delete_stmt)
+        self.__db.commit()
+        
     def update(self, order_id, order: schemas.Order) -> models.Order:
         update_stmt = (
             update(models.Order)
