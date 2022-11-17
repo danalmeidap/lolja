@@ -19,7 +19,6 @@ class User(BaseModel):
     phonee: str
     password: str
     products: List[ProductOut] = []
-   
 
     class Config:
         orm_mode = True
@@ -30,7 +29,7 @@ class UserForList(BaseModel):
     name: str
     phonee: str
     products: List[ProductOut] = []
-   
+
     class Config:
         orm_mode = True
 
@@ -39,7 +38,7 @@ class UserOut(BaseModel):
     id: Optional[int] = None
     name: str
     phonee: str
-    
+
     class Config:
         orm_mode = True
 
@@ -74,6 +73,7 @@ class OrderOut(BaseModel):
     id: Optional[int] = None
     quantity: int
     address: str
+    observations: str
     user: Optional[UserOut]
     product: Optional[ProductOut]
 

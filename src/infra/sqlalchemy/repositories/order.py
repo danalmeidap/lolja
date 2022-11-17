@@ -1,7 +1,8 @@
 from typing import List
 
-from sqlalchemy import update, delete
+from sqlalchemy import delete, select, update
 from sqlalchemy.orm import Session
+
 from src.infra.sqlalchemy.models import models
 from src.schemas import schemas
 
@@ -33,10 +34,10 @@ class OrderRepository:
         return db_order
 
     def remove(self, order_id: int) -> None:
-        delete_stmt = delete(models.Order).where(models.Order.id==order_id)
+        delete_stmt = delete(models.Order).where(models.Order.id == order_id)
         self.__db.execute(delete_stmt)
         self.__db.commit()
-        
+
     def update(self, order_id, order: schemas.Order) -> models.Order:
         update_stmt = (
             update(models.Order)
@@ -50,3 +51,17 @@ class OrderRepository:
         )
         self.__db.execute(update_stmt)
         self.__db.commit()
+
+    def get_order_by_user_id(self, user_id: int) -> List[models.Order]:
+        query = select(models.Order).where(models.Order.user_id == user_id)
+        orders = self.__db.execute(query).scalars().first()
+        return orders
+
+    def get_sells_by_user_id(self, user_id: int) -> List[models.Order]:
+        query = (
+            select(models.Order)
+            .join_from(models.Order, models.Product)
+            .where(models.Product.user_id == user_id)
+        )
+        orders = self.__db.execute(query).scalars().all()
+        return orders
