@@ -46,13 +46,13 @@ async def get_order(order_id: int, db: Session = Depends(get_db)):
 
 
 @router.get(
-    "/orders/{user_id}",
+    "/orders/{user_id}/buys",
     status_code=status.HTTP_200_OK,
     tags=["orders"],
-    response_model=OrderOut,
+    response_model=List[OrderOut]
 )
 async def get_order_by_user_id(user_id: int, db: Session = Depends(get_db)):
-    orders = OrderRepository(db).get_orders_by_user_id(user_id)
+    orders = OrderRepository(db).get_order_by_user_id(user_id)
     if not orders:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Order not found"

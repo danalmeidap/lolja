@@ -54,7 +54,7 @@ class OrderRepository:
 
     def get_order_by_user_id(self, user_id: int) -> List[models.Order]:
         query = select(models.Order).where(models.Order.user_id == user_id)
-        orders = self.__db.execute(query).scalars().first()
+        orders = self.__db.execute(query).scalars().all()
         return orders
 
     def get_sells_by_user_id(self, user_id: int) -> List[models.Order]:
