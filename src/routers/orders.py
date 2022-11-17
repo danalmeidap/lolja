@@ -61,7 +61,7 @@ async def get_order_by_user_id(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.get(
-    "/orders{user_id}",
+    "/orders/{user_id}/sells",
     status_code=status.HTTP_200_OK,
     tags=["orders"],
     response_model=List[OrderOut],
