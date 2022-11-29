@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 from src.infra.sqlalchemy.config.database import create_db
 from fastapi.middleware.cors import CORSMiddleware
-from src.routers import products, users, orders
+from src.routers import auth, products, orders
 
 
 app = FastAPI()
 
 app.include_router(products.router)
-app.include_router(users.router)
+app.include_router(auth.router, prefix="/auth")
 app.include_router(orders.router)
 
 create_db()

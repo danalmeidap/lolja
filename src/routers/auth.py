@@ -7,28 +7,25 @@ from src.infra.sqlalchemy.config.database import get_db
 from src.infra.sqlalchemy.repositories.user import UserRepository
 from src.schemas.schemas import User, UserForList, UserOut
 
+from src.infra.providers import hash_provider
+
+
 router = APIRouter()
 
 
-@router.get(
-    "/users",
-    status_code=status.HTTP_200_OK,
-    tags=["users"],
-    response_model=List[UserForList],
-)
-async def users_list(db: Session = Depends(get_db)):
-    return UserRepository(db).users_list()
-
-
 @router.post(
-    "/users",
+    "/signup",
     status_code=status.HTTP_201_CREATED,
     tags=["users"],
     response_model=UserOut,
 )
-async def create_user(
+async def signup(
     user: User, db: Session = Depends(get_db)
 ):
+    user_db = UserRepository(db).get_by_phone(user.phonee)
+    if user_db:
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail= "User already exists")
+    user.password = hash_provider.create_hash(user.password)
     return UserRepository(db).create(user)
 
 
@@ -43,7 +40,7 @@ async def get_user(
 ):
     user = UserRepository(db).get_user(user_id)
     if not user:
-        HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="User not found")
     return user
 
 
@@ -58,7 +55,7 @@ async def get_user_by_phone(
 ):
     user = UserRepository(db).get_by_phone(user_phone)
     if not user:
-        HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="User not found")
     return user 
 
 
@@ -72,7 +69,8 @@ async def update_user(
     user_id: int, user: User, db: Session = Depends(get_db)
 ):
     if not UserRepository(db).get_user(user_id):
-        HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="User not found")
+    user.password = hash_provider.create_hash(user.password)    
     UserRepository(db).update(user_id, user)  
     user = UserRepository(db).get_user(user_id)
     return user
@@ -86,7 +84,7 @@ async def delete_user(
 ):
     user = UserRepository(db).get_user(user_id)
     if not user:
-        HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="User not found")
     UserRepository(db).remove(user_id)
     return f"User id {user_id} deleted" 
             
