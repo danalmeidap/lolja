@@ -79,3 +79,13 @@ class OrderOut(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class LoginData(BaseModel):
+    password: str
+    phonee: str
+
+
+class LoginSucesSuccessful(BaseModel):
+    user: UserOut
+    access_token: str
