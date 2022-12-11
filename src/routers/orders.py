@@ -6,6 +6,8 @@ from sqlalchemy.orm import Session
 from src.infra.sqlalchemy.config.database import get_db
 from src.infra.sqlalchemy.repositories.order import OrderRepository
 from src.schemas.schemas import Order, OrderOut
+from src.infra.sqlalchemy.models.models import User
+from src.routers.utils import obtain_logged_user
 
 router = APIRouter()
 
@@ -46,13 +48,13 @@ async def get_order(order_id: int, db: Session = Depends(get_db)):
 
 
 @router.get(
-    "/orders/{user_id}/buys",
+    "/buys",
     status_code=status.HTTP_200_OK,
     tags=["orders"],
     response_model=List[OrderOut]
 )
-async def get_order_by_user_id(user_id: int, db: Session = Depends(get_db)):
-    orders = OrderRepository(db).get_order_by_user_id(user_id)
+async def get_order_by_user_id(user:User= Depends(obtain_logged_user), db: Session = Depends(get_db)):
+    orders = OrderRepository(db).get_order_by_user_id(user.id)
     if not orders:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Order not found"
@@ -61,13 +63,13 @@ async def get_order_by_user_id(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.get(
-    "/orders/{user_id}/sells",
+    "/sells",
     status_code=status.HTTP_200_OK,
     tags=["orders"],
     response_model=List[OrderOut],
 )
-def get_sells_by_user_id(user_id: int, db: Session = Depends(get_db)):
-    order = OrderRepository(db).get_sells_by_user_id(user_id)
+def get_sells_by_user_id(user:User= Depends(obtain_logged_user), db: Session = Depends(get_db)):
+    order = OrderRepository(db).get_sells_by_user_id(user.id)
     if not order:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Order not found"
