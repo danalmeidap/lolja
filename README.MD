@@ -8,6 +8,7 @@
     <li><a href="https://fastapi.tiangolo.com/">FastAPI</a></li>
     <li><a href="https://docs.sqlalchemy.org/en/14/">SQLALCHEMY</a></li>
     <li><a href="https://www.sqlite.org/docs.html">SQLITE3</a></li>
+    <li><a href="https://www.dynaconf.com/">DYNACONF</a></li>
 </ul>
 
 # 
@@ -24,6 +25,7 @@
 - [x] Add a user
 - [x] List buys and sells by user
 - [x] Authenticate and validate user by token
+- [x] Only an authenticated user can see their buys and sells.  
 
 # 
 
