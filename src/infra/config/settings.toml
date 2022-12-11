@@ -1,0 +1,12 @@
+name = "lolja"
+
+[database]
+url= "sqlite:///./lolja.db"
+
+[hash]
+scheme = "bcrypt"
+
+[token]
+secret_key= "caa9c8f8620cbb30679026bb6427e11f"
+algorithm= "HS256"
+minutes= 3000

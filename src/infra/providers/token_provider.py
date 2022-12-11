@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta
 from typing import Union
+from src.infra.config.config import settings 
 
 from jose import jwt
 
-SECRET_KEY = "caa9c8f8620cbb30679026bb6427e11f"
-ALGORITHM = "HS256"
-EXPIRES_IN_MINUTES = 3000
+SECRET_KEY = settings.token.secret_key
+ALGORITHM = settings.token.algorithm
+EXPIRES_IN_MINUTES = settings.token.minutes
 
 
 def create_access_token(data: dict) -> str:

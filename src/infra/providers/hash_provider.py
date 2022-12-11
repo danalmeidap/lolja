@@ -1,6 +1,7 @@
 from passlib.context import CryptContext
+from src.infra.config.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"])
+pwd_context = CryptContext(schemes=[settings.hash.scheme])
 
 
 def create_hash(texto):
